@@ -216,8 +216,8 @@
             donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - currentAmount);
             donationChart.update();
 
-           currentAmountText.textContent = ${currentAmount.toLocaleString()};
-       
+            percentageText.textContent = `${percentage.toFixed(1)}%`;
+            currentAmountText.textContent = currentAmount.toLocaleString('th-TH');
         }
 
         function updateClock() {
@@ -349,5 +349,3 @@
     </script>
 </body>
 </html>
-
-
