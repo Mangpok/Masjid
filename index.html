@@ -61,14 +61,13 @@
                         <div class="chart-container">
                             <canvas id="donationChart"></canvas>
                             <div id="chartText" class="chart-text">
-                                <span id="percentageText" class="text-4xl font-bold text-emerald-800">0%</span>
+                                <span id="percentageText" class="text-4xl font-bold text-emerald-800">...%</span>
                                 <span class="block text-stone-500" data-i18n="donation_label">ยอดบริจาค</span>
                                 <span id="currentTimeText" class="block text-sm text-stone-400 mt-1"></span>
                             </div>
                         </div>
                         <div class="mt-6">
-                            <!-- Label and text for the amount have been updated to reflect "latest donation" -->
-                            <p class="font-bold text-lg"><span data-i18n="latest_amount_label">ยอดบริจาคล่าสุด:</span> <span id="currentAmountText" class="text-amber-600">0</span> บาท</p>
+                            <p class="font-bold text-lg"><span data-i18n="latest_amount_label">ยอดบริจาคล่าสุด:</span> <span id="currentAmountText" class="text-amber-600">กำลังโหลด...</span> บาท</p>
                             <p class="text-stone-500"><span data-i18n="goal_from">จากเป้าหมาย</span> 3,000,000 บาท</p>
                         </div>
                     </div>
@@ -202,12 +201,10 @@
             });
 
             // ฟังก์ชันสำหรับอัปเดตข้อมูลบนหน้าเว็บ
-            // โค้ดนี้ยังคงใช้งานสำหรับแสดงยอดรวม เพื่อให้กราฟความคืบหน้าทำงานได้ถูกต้อง
-            // แต่จะมีการใช้ค่าจาก sheet ล่าสุดในการแสดงผลด้านล่าง
             function updateChart(amount) {
                 const percentage = Math.min(100, (amount / donationGoal) * 100);
                 
-                // อัปเดตกราฟให้แสดงยอดรวม
+                // อัปเดตกราฟ
                 donationChart.data.datasets[0].data[0] = amount;
                 donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - amount);
                 donationChart.update();
@@ -268,44 +265,39 @@
                     }
                     const csvText = await response.text();
                     
-                    // ปรับปรุงโค้ดตรงนี้เพื่อดึงเฉพาะค่าจากแถวสุดท้ายเท่านั้น
+                    // ดึงข้อมูลค่าตัวเลขล่าสุดจากแถวล่างสุดที่พบ
                     const rows = csvText.trim().split('\n').filter(row => row.trim());
                     let latestAmount = 0;
                     
-                    // ตรวจสอบว่ามีข้อมูลใน Google Sheet หรือไม่
-                    if (rows.length > 0) {
-                        // ดึงข้อมูลจากแถวสุดท้าย
-                        const lastRow = rows[rows.length - 1];
-                        latestAmount = parseFloat(lastRow.split(',')[0]);
-                        // ถ้าค่าที่ได้ไม่เป็นตัวเลข ให้ตั้งค่าเป็น 0
-                        if (isNaN(latestAmount)) {
-                            latestAmount = 0;
+                    for (let i = rows.length - 1; i >= 0; i--) {
+                        const row = rows[i];
+                        const value = parseFloat(row.split(',')[0]);
+                        if (!isNaN(value)) {
+                            latestAmount = value;
+                            break; 
                         }
                     }
-                    
+
                     // อัปเดตยอดบริจาคด้วยค่าล่าสุด
                     updateChart(latestAmount);
                     console.log(`ดึงข้อมูลสำเร็จ! ยอดบริจาคล่าสุด: ${latestAmount.toLocaleString('th-TH')} บาท`);
 
                 } catch (error) {
                     console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
-                    // หากเกิดข้อผิดพลาดในการดึงข้อมูล จะใช้ค่าเริ่มต้น 0
+                    // แสดง 0 เมื่อเกิดข้อผิดพลาด
                     updateChart(0);
                 }
             }
 
             // เริ่มการทำงานเมื่อหน้าเว็บโหลดเสร็จ
             window.onload = function() {
-                // กำหนดภาษาเริ่มต้นเป็นภาษาไทย
                 setLanguage('th');
-                // อัปเดตยอดบริจาคเริ่มต้น (สามารถใช้ค่า 0 หรือค่าที่ต้องการ)
-                updateChart(0);
-                // เริ่มอัปเดตเวลาปัจจุบัน
-                setInterval(updateClock, 1000);
-                // ดึงข้อมูลครั้งแรก
+                // เรียก fetchSheet() ทันทีเพื่อดึงข้อมูลแรก
                 fetchSheet();
-                // ตั้งค่าให้อัปเดตข้อมูลทุกๆ 15 วินาที
-                setInterval(fetchSheet, 1000 * 15);
+                // ตั้งค่าให้อัปเดตเวลาทุกวินาที
+                setInterval(updateClock, 1000);
+                // ตั้งค่าให้อัปเดตข้อมูลทุกๆ 10 วินาที
+                setInterval(fetchSheet, 1000 * 10);
             }
         })();
     </script>
