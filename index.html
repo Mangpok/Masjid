@@ -70,10 +70,10 @@
                             <p class="font-bold text-lg"><span data-i18n="current_amount_label">ยอดบริจาคปัจจุบัน:</span> <span id="currentAmountText" class="text-amber-600">0</span> บาท</p>
                             <p class="text-stone-500"><span data-i18n="goal_from">จากเป้าหมาย</span> 3,000,000 บาท</p>
                         </div>
-                        <div class="mt-6 p-4 bg-stone-100 rounded-lg">
+                        <!-- <div class="mt-6 p-4 bg-stone-100 rounded-lg">
                             <label for="donationInput" class="block text-sm font-medium text-stone-700 mb-2" data-i18n="input_label">ป้อนยอดเงินบริจาค (บาท)</label>
                             <input id="donationInput" type="number" min="0" max="3000000" placeholder="เช่น 100" class="w-full p-2 rounded-lg border-2 border-stone-300 focus:outline-none focus:border-emerald-500 text-center">
-                        </div>
+                        </div> -->
                     </div>
                     
                     <div class="flex flex-col gap-8">
@@ -158,7 +158,7 @@
         const ctx = document.getElementById('donationChart').getContext('2d');
         const percentageText = document.getElementById('percentageText');
         const currentAmountText = document.getElementById('currentAmountText');
-        const donationInput = document.getElementById('donationInput');
+        // const donationInput = document.getElementById('donationInput');
         const currentTimeText = document.getElementById('currentTimeText');
         const copyFeedbackEl = document.getElementById('copy-feedback');
 
@@ -198,11 +198,11 @@
             });
 
             // Handle placeholder text separately
-            if (lang === 'ms') {
-                donationInput.placeholder = 'Contoh 100';
-            } else {
-                donationInput.placeholder = 'เช่น 100';
-            }
+            // if (lang === 'ms') {
+            //     donationInput.placeholder = 'Contoh 100';
+            // } else {
+            //     donationInput.placeholder = 'เช่น 100';
+            // }
 
             // Update time with new locale
             updateClock();
@@ -233,10 +233,10 @@
             currentTimeText.textContent = `${translations[currentLang].current_amount_label}: ${formattedTime}`;
         }
 
-        donationInput.addEventListener('input', (event) => {
-            const value = parseInt(event.target.value) || 0;
-            updateChart(value);
-        });
+        // donationInput.addEventListener('input', (event) => {
+        //     const value = parseInt(event.target.value) || 0;
+        //     updateChart(value);
+        // });
 
         function copyToClipboard(elementId) {
             const textToCopy = document.getElementById(elementId).innerText;
@@ -261,7 +261,91 @@
             updateChart(0);
             setInterval(updateClock, 1000);
         }
+
+        async function fetchSheet() {
+            console.log('----- fetching sheet -----');
+            try {
+                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-33OMQ5F5R53TTKkAYzzKGqT3uDOnvk8ojlVgk2QCEhgJ-D2R__WQv7luBKswKNGYsS991EUEKAy5/pub?gid=0&single=true&output=csv';
+                
+                // วิธีที่ 1: ลองใช้ Google Sheets API format
+                const apiUrl = url.replace('output=csv', 'output=json');
+                console.log('Trying Google Sheets API format...');
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const jsonText = await response.text();
+                    console.log('Raw JSON data:', jsonText);
+
+                    // Parse Google Sheets JSON format
+                    const data = JSON.parse(jsonText);
+                    if (data.table && data.table.rows) {
+                        const rows = data.table.rows.map(row => 
+                            row.c.map(cell => cell ? cell.v : '')
+                        );
+                        console.log('Parsed rows from API:', rows);
+                        return rows;
+                    }
+                }
+                
+                // วิธีที่ 2: ลองใช้ CSV format โดยตรง
+                console.log('Trying direct CSV fetch...');
+                const csvResponse = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (csvResponse.ok) {
+                    const csvText = await csvResponse.text();
+                    console.log('Raw CSV data:', csvText);
+                    updateChart(csvText);
+                    // Parse CSV data
+                    const rows = csvText.split('\n')
+                        .filter(row => row.trim()) // ลบแถวว่าง
+                        .map(row => row.split(',').map(cell => cell.trim()));
+                    console.log('Parsed rows from CSV:', rows);
+                    return rows;
+                }
+                
+                throw new Error('Both API and CSV methods failed');
+                
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                console.log('Trying alternative method...');
+            }
+        }
+
+        // วิธี JSONP สำหรับ local development
+        function fetchSheetWithJSONP(url) {
+            return new Promise((resolve, reject) => {
+                // เปลี่ยน URL เป็น JSON format
+                const jsonUrl = url.replace('output=csv', 'output=json');
+                const script = document.createElement('script');
+                script.src = jsonUrl;
+                script.onload = () => {
+                    console.log('JSONP loaded successfully');
+                    // ข้อมูลจะอยู่ใน global variable ที่ Google Sheets สร้าง
+                    if (window.google && window.google.visualization) {
+                        resolve([]);
+                    } else {
+                        resolve([]);
+                    }
+                };
+                script.onerror = () => {
+                    console.log('JSONP failed, using mock data');
+                    resolve([]);
+                };
+                document.head.appendChild(script);
+            });
+        }
+        fetchSheet();
     </script>
 </body>
 </html>
-
