@@ -67,13 +67,10 @@
                             </div>
                         </div>
                         <div class="mt-6">
-                            <p class="font-bold text-lg"><span data-i18n="current_amount_label">ยอดบริจาคปัจจุบัน:</span> <span id="currentAmountText" class="text-amber-600">0</span> บาท</p>
+                            <!-- Label and text for the amount have been updated to reflect "latest donation" -->
+                            <p class="font-bold text-lg"><span data-i18n="latest_amount_label">ยอดบริจาคล่าสุด:</span> <span id="currentAmountText" class="text-amber-600">0</span> บาท</p>
                             <p class="text-stone-500"><span data-i18n="goal_from">จากเป้าหมาย</span> 3,000,000 บาท</p>
                         </div>
-                        <!-- <div class="mt-6 p-4 bg-stone-100 rounded-lg">
-                            <label for="donationInput" class="block text-sm font-medium text-stone-700 mb-2" data-i18n="input_label">ป้อนยอดเงินบริจาค (บาท)</label>
-                            <input id="donationInput" type="number" min="0" max="3000000" placeholder="เช่น 100" class="w-full p-2 rounded-lg border-2 border-stone-300 focus:outline-none focus:border-emerald-500 text-center">
-                        </div> -->
                     </div>
                     
                     <div class="flex flex-col items-center">
@@ -138,7 +135,7 @@
                     progress_heading: 'ความคืบหน้ายอดบริจาค',
                     progress_description: 'ร่วมเป็นส่วนหนึ่งในการเติมเต็มเป้าหมาย 3,000,000 บาท เพื่อสร้างบ้านของอัลลอฮฺให้สำเร็จ',
                     donation_label: 'ยอดบริจาค',
-                    current_amount_label: 'ยอดบริจาคปัจจุบัน:',
+                    latest_amount_label: 'ยอดบริจาคล่าสุด:',
                     goal_from: 'จากเป้าหมาย',
                     input_label: 'ป้อนยอดเงินบริจาค (บาท)',
                     donation_channels: 'ช่องทางการบริจาค',
@@ -160,7 +157,7 @@
                     progress_heading: 'Kemajuan Dana Sumbangan',
                     progress_description: 'Sertai kami dalam mencapai sasaran 3,000,000 Baht untuk menyelesaikan Rumah Allah.',
                     donation_label: 'Sumbangan',
-                    current_amount_label: 'Jumlah Sumbangan Semasa:',
+                    latest_amount_label: 'Jumlah Sumbangan Terkini:',
                     goal_from: 'Dari sasaran',
                     input_label: 'Masukkan jumlah sumbangan (Baht)',
                     donation_channels: 'Saluran Sumbangan',
@@ -205,10 +202,12 @@
             });
 
             // ฟังก์ชันสำหรับอัปเดตข้อมูลบนหน้าเว็บ
+            // โค้ดนี้ยังคงใช้งานสำหรับแสดงยอดรวม เพื่อให้กราฟความคืบหน้าทำงานได้ถูกต้อง
+            // แต่จะมีการใช้ค่าจาก sheet ล่าสุดในการแสดงผลด้านล่าง
             function updateChart(amount) {
                 const percentage = Math.min(100, (amount / donationGoal) * 100);
                 
-                // อัปเดตกราฟ
+                // อัปเดตกราฟให้แสดงยอดรวม
                 donationChart.data.datasets[0].data[0] = amount;
                 donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - amount);
                 donationChart.update();
@@ -269,20 +268,24 @@
                     }
                     const csvText = await response.text();
                     
-                    // แยกบรรทัดและคอลัมน์เพื่อหาผลรวม
-                    const rows = csvText.split('\n').filter(row => row.trim());
-                    let totalAmount = 0;
+                    // ปรับปรุงโค้ดตรงนี้เพื่อดึงเฉพาะค่าจากแถวสุดท้ายเท่านั้น
+                    const rows = csvText.trim().split('\n').filter(row => row.trim());
+                    let latestAmount = 0;
                     
-                    rows.forEach(row => {
-                        const value = parseFloat(row.split(',')[0]);
-                        if (!isNaN(value)) {
-                            totalAmount += value;
+                    // ตรวจสอบว่ามีข้อมูลใน Google Sheet หรือไม่
+                    if (rows.length > 0) {
+                        // ดึงข้อมูลจากแถวสุดท้าย
+                        const lastRow = rows[rows.length - 1];
+                        latestAmount = parseFloat(lastRow.split(',')[0]);
+                        // ถ้าค่าที่ได้ไม่เป็นตัวเลข ให้ตั้งค่าเป็น 0
+                        if (isNaN(latestAmount)) {
+                            latestAmount = 0;
                         }
-                    });
+                    }
                     
-                    // อัปเดตยอดบริจาคด้วยผลรวมที่ได้
-                    updateChart(totalAmount);
-                    console.log(`ดึงข้อมูลสำเร็จ! ยอดรวม: ${totalAmount.toLocaleString('th-TH')} บาท`);
+                    // อัปเดตยอดบริจาคด้วยค่าล่าสุด
+                    updateChart(latestAmount);
+                    console.log(`ดึงข้อมูลสำเร็จ! ยอดบริจาคล่าสุด: ${latestAmount.toLocaleString('th-TH')} บาท`);
 
                 } catch (error) {
                     console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
@@ -308,4 +311,3 @@
     </script>
 </body>
 </html>
-
