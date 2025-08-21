@@ -76,10 +76,8 @@
                         </div> -->
                     </div>
                     
-                    <div class="flex flex-col gap-8">
-                        <div class="flex flex-col items-center">
-                            <img src="https://img5.pic.in.th/file/secure-sv1/Yellow-White-Modern-Ramadan-Iftar-Party-Promotion-Poster-2.png" alt="โปสเตอร์งานนาซิกาบู" class="w-full h-auto rounded-xl shadow-md max-w-sm">
-                        </div>
+                    <div class="flex flex-col items-center">
+                        <img src="https://img5.pic.in.th/file/secure-sv1/Yellow-White-Modern-Ramadan-Iftar-Party-Promotion-Poster-2.png" alt="โปสเตอร์งานนาซิกาบู" class="w-full h-auto rounded-xl shadow-md max-w-sm">
                     </div>
                 </div>
             </section>
@@ -111,241 +109,182 @@
     </div>
 
     <script>
-        const donationGoal = 3000000;
-        let currentAmount = 0;
-        let currentLang = 'th';
-
-        // Translation data
-        const translations = {
-            th: {
-                project_title: 'โครงการนาซิกาบู',
-                project_subtitle: 'รวมพลังศรัทธา สร้างมัสยิดอัลฮีลาลียะห์',
-                progress_heading: 'ความคืบหน้ายอดบริจาค',
-                progress_description: 'ร่วมเป็นส่วนหนึ่งในการเติมเต็มเป้าหมาย 3,000,000 บาท เพื่อสร้างบ้านของอัลลอฮฺให้สำเร็จ',
-                donation_label: 'ยอดบริจาค',
-                current_amount_label: 'ยอดบริจาคปัจจุบัน:',
-                goal_from: 'จากเป้าหมาย',
-                input_label: 'ป้อนยอดเงินบริจาค (บาท)',
-                donation_channels: 'ช่องทางการบริจาค',
-                islamic_bank_title: 'ธนาคารอิสลามแห่งประเทศไทย',
-                maybank_title: 'Maybank',
-                account_name_prefix: 'ชื่อบัญชี:',
-                copy_button: 'คัดลอกเลขบัญชี',
-                copy_success: 'คัดลอกเลขบัญชีเรียบร้อยแล้ว!',
-                footer_message: 'ผลบุญที่ท่านสร้างวันนี้ คือบ้านของท่านในอาคิเราะห์',
-                footer_project_name: 'โครงการมัสยิดอัลฮีลาลียะห์',
-            },
-            ms: {
-                project_title: 'Projek Nasikabu',
-                project_subtitle: 'Bersatu Hati Membina Masjid Al-Hilaliyah',
-                progress_heading: 'Kemajuan Dana Sumbangan',
-                progress_description: 'Sertai kami dalam mencapai sasaran 3,000,000 Baht untuk menyelesaikan Rumah Allah.',
-                donation_label: 'Sumbangan',
-                current_amount_label: 'Jumlah Sumbangan Semasa:',
-                goal_from: 'Dari sasaran',
-                input_label: 'Masukkan jumlah sumbangan (Baht)',
-                donation_channels: 'Saluran Sumbangan',
-                islamic_bank_title: 'Bank Islam Thailand',
-                maybank_title: 'Maybank',
-                account_name_prefix: 'Nama Akaun:',
-                copy_button: 'Salin Nombor Akaun',
-                copy_success: 'Nombor akaun berjaya disalin!',
-                footer_message: 'Pahala yang anda bina hari ini, adalah rumah anda di Akhirat.',
-                footer_project_name: 'Projek Masjid Al-Hilaliyah',
-            }
-        };
-
-        const ctx = document.getElementById('donationChart').getContext('2d');
-        const percentageText = document.getElementById('percentageText');
-        const currentAmountText = document.getElementById('currentAmountText');
-        // const donationInput = document.getElementById('donationInput');
-        const currentTimeText = document.getElementById('currentTimeText');
-        const copyFeedbackEl = document.getElementById('copy-feedback');
-
-        const donationChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, donationGoal],
-                    backgroundColor: ['#f59e0b', '#e5e7eb'],
-                    borderWidth: 0,
-                    borderRadius: 10,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    tooltip: { enabled: false }
+        // โค้ดทั้งหมดอยู่ในฟังก์ชันเดียวเพื่อจัดการการทำงาน
+        (async function() {
+            const donationGoal = 3000000;
+            const currentTimeText = document.getElementById('currentTimeText');
+            const copyFeedbackEl = document.getElementById('copy-feedback');
+            const percentageText = document.getElementById('percentageText');
+            const currentAmountText = document.getElementById('currentAmountText');
+            let currentLang = 'th';
+            
+            // ข้อมูลสำหรับแปลภาษา
+            const translations = {
+                th: {
+                    project_title: 'โครงการนาซิกาบู',
+                    project_subtitle: 'รวมพลังศรัทธา สร้างมัสยิดอัลฮีลาลียะห์',
+                    progress_heading: 'ความคืบหน้ายอดบริจาค',
+                    progress_description: 'ร่วมเป็นส่วนหนึ่งในการเติมเต็มเป้าหมาย 3,000,000 บาท เพื่อสร้างบ้านของอัลลอฮฺให้สำเร็จ',
+                    donation_label: 'ยอดบริจาค',
+                    current_amount_label: 'ยอดบริจาคปัจจุบัน:',
+                    goal_from: 'จากเป้าหมาย',
+                    input_label: 'ป้อนยอดเงินบริจาค (บาท)',
+                    donation_channels: 'ช่องทางการบริจาค',
+                    islamic_bank_title: 'ธนาคารอิสลามแห่งประเทศไทย',
+                    maybank_title: 'Maybank',
+                    account_name_prefix: 'ชื่อบัญชี:',
+                    copy_button: 'คัดลอกเลขบัญชี',
+                    copy_success: 'คัดลอกเลขบัญชีเรียบร้อยแล้ว!',
+                    footer_message: 'ผลบุญที่ท่านสร้างวันนี้ คือบ้านของท่านในอาคิเราะห์',
+                    footer_project_name: 'โครงการมัสยิดอัลฮีลาลียะห์',
                 },
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
+                ms: {
+                    project_title: 'Projek Nasikabu',
+                    project_subtitle: 'Bersatu Hati Membina Masjid Al-Hilaliyah',
+                    progress_heading: 'Kemajuan Dana Sumbangan',
+                    progress_description: 'Sertai kami dalam mencapai sasaran 3,000,000 Baht untuk menyelesaikan Rumah Allah.',
+                    donation_label: 'Sumbangan',
+                    current_amount_label: 'Jumlah Sumbangan Semasa:',
+                    goal_from: 'Dari sasaran',
+                    input_label: 'Masukkan jumlah sumbangan (Baht)',
+                    donation_channels: 'Saluran Sumbangan',
+                    islamic_bank_title: 'Bank Islam Thailand',
+                    maybank_title: 'Maybank',
+                    account_name_prefix: 'Nama Akaun:',
+                    copy_button: 'Salin Nombor Akaun',
+                    copy_success: 'Nombor akaun berjaya disalin!',
+                    footer_message: 'Pahala yang anda bina hari ini, adalah rumah anda di Akhirat.',
+                    footer_project_name: 'Projek Masjid Al-Hilaliyah',
                 }
-            }
-        });
-
-        // Function to set the language
-        function setLanguage(lang) {
-            currentLang = lang;
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.textContent = translations[lang][key];
+            };
+            
+            // สร้าง Doughnut Chart
+            const ctx = document.getElementById('donationChart').getContext('2d');
+            const donationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [0, donationGoal],
+                        backgroundColor: ['#f59e0b', '#e5e7eb'],
+                        borderWidth: 0,
+                        borderRadius: 10,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        tooltip: { enabled: false }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
                 }
             });
 
-            // Handle placeholder text separately
-            // if (lang === 'ms') {
-            //     donationInput.placeholder = 'Contoh 100';
-            // } else {
-            //     donationInput.placeholder = 'เช่น 100';
-            // }
-
-            // Update time with new locale
-            updateClock();
-        }
-
-        function updateChart(amount) {
-            currentAmount = amount;
-            const percentage = Math.min(100, (currentAmount / donationGoal) * 100);
-            
-            donationChart.data.datasets[0].data[0] = currentAmount;
-            donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - currentAmount);
-            donationChart.update();
-
-            percentageText.textContent = `${percentage.toFixed(1)}%`;
-            currentAmountText.textContent = currentAmount.toLocaleString('th-TH');
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            
-            let locale = 'th-TH';
-            if (currentLang === 'ms') {
-                locale = 'ms-MY';
+            // ฟังก์ชันสำหรับอัปเดตข้อมูลบนหน้าเว็บ
+            function updateChart(amount) {
+                const percentage = Math.min(100, (amount / donationGoal) * 100);
+                
+                // อัปเดตกราฟ
+                donationChart.data.datasets[0].data[0] = amount;
+                donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - amount);
+                donationChart.update();
+                
+                // อัปเดตข้อความยอดบริจาค
+                percentageText.textContent = `${percentage.toFixed(1)}%`;
+                currentAmountText.textContent = amount.toLocaleString('th-TH');
             }
-            const formattedTime = now.toLocaleDateString(locale, options);
-            
-            currentTimeText.textContent = `${translations[currentLang].current_amount_label}: ${formattedTime}`;
-        }
 
-        // donationInput.addEventListener('input', (event) => {
-        //     const value = parseInt(event.target.value) || 0;
-        //     updateChart(value);
-        // });
+            // ฟังก์ชันสำหรับเปลี่ยนภาษา
+            window.setLanguage = function(lang) {
+                currentLang = lang;
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang][key]) {
+                        el.textContent = translations[lang][key];
+                    }
+                });
+                updateClock(); // อัปเดตเวลาตามภาษาใหม่
+            };
 
-        function copyToClipboard(elementId) {
-            const textToCopy = document.getElementById(elementId).innerText;
-            
-            const tempInput = document.createElement('input');
-            tempInput.value = textToCopy;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
+            // ฟังก์ชันสำหรับอัปเดตเวลาปัจจุบัน
+            function updateClock() {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                let locale = (currentLang === 'ms') ? 'ms-MY' : 'th-TH';
+                const formattedTime = now.toLocaleDateString(locale, options);
+                currentTimeText.textContent = `${formattedTime}`;
+            }
 
-            copyFeedbackEl.textContent = translations[currentLang].copy_success;
-            copyFeedbackEl.classList.remove('opacity-0');
-            setTimeout(() => {
-                copyFeedbackEl.classList.add('opacity-0');
-            }, 2000);
-        }
+            // ฟังก์ชันสำหรับคัดลอกเลขบัญชี
+            window.copyToClipboard = function(elementId) {
+                const textToCopy = document.getElementById(elementId).innerText;
+                const tempInput = document.createElement('input');
+                tempInput.value = textToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
 
-        // Initialize with default language and chart data
-        window.onload = function() {
-            setLanguage('th');
-            updateChart(0);
-            setInterval(updateClock, 1000);
-        }
+                copyFeedbackEl.textContent = translations[currentLang].copy_success;
+                copyFeedbackEl.classList.remove('opacity-0');
+                setTimeout(() => {
+                    copyFeedbackEl.classList.add('opacity-0');
+                }, 2000);
+            };
 
-        async function fetchSheet() {
-            console.log('----- fetching sheet -----');
-            try {
+            // ฟังก์ชันหลักสำหรับดึงข้อมูลจาก Google Sheet
+            async function fetchSheet() {
+                console.log('กำลังดึงข้อมูลจาก Google Sheet...');
                 const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSdxUvZTFoCoJODdiGXDsofsY8Dfl27i59rtjyKhFeLw4U3viAqbWrVGvgn9HHu6dpT3ngUAzooaRnv/pub?gid=0&single=true&output=csv';
                 
-                // วิธีที่ 1: ลองใช้ Google Sheets API format
-                const apiUrl = url.replace('output=csv', 'output=json');
-                console.log('Trying Google Sheets API format...');
-                
-                const response = await fetch(apiUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                });
-                
-                if (response.ok) {
-                    const jsonText = await response.text();
-                    console.log('Raw JSON data:', jsonText);
+                    const csvText = await response.text();
+                    
+                    // แยกบรรทัดและคอลัมน์เพื่อหาผลรวม
+                    const rows = csvText.split('\n').filter(row => row.trim());
+                    let totalAmount = 0;
+                    
+                    rows.forEach(row => {
+                        const value = parseFloat(row.split(',')[0]);
+                        if (!isNaN(value)) {
+                            totalAmount += value;
+                        }
+                    });
+                    
+                    // อัปเดตยอดบริจาคด้วยผลรวมที่ได้
+                    updateChart(totalAmount);
+                    console.log(`ดึงข้อมูลสำเร็จ! ยอดรวม: ${totalAmount.toLocaleString('th-TH')} บาท`);
 
-                    // Parse Google Sheets JSON format
-                    const data = JSON.parse(jsonText);
-                    if (data.table && data.table.rows) {
-                        const rows = data.table.rows.map(row => 
-                            row.c.map(cell => cell ? cell.v : '')
-                        );
-                        console.log('Parsed rows from API:', rows);
-                        return rows;
-                    }
+                } catch (error) {
+                    console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+                    // หากเกิดข้อผิดพลาดในการดึงข้อมูล จะใช้ค่าเริ่มต้น 0
+                    updateChart(0);
                 }
-                
-                // วิธีที่ 2: ลองใช้ CSV format โดยตรง
-                console.log('Trying direct CSV fetch...');
-                const csvResponse = await fetch(url, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                if (csvResponse.ok) {
-                    const csvText = await csvResponse.text();
-                    console.log('Raw CSV data:', csvText);
-                    updateChart(csvText);
-                    // Parse CSV data
-                    const rows = csvText.split('\n')
-                        .filter(row => row.trim()) // ลบแถวว่าง
-                        .map(row => row.split(',').map(cell => cell.trim()));
-                    console.log('Parsed rows from CSV:', rows);
-                    return rows;
-                }
-                
-                throw new Error('Both API and CSV methods failed');
-                
-            } catch (error) {
-                console.error('Error fetching sheet data:', error);
-                console.log('Trying alternative method...');
             }
-        }
 
-        // วิธี JSONP สำหรับ local development
-        function fetchSheetWithJSONP(url) {
-            return new Promise((resolve, reject) => {
-                // เปลี่ยน URL เป็น JSON format
-                const jsonUrl = url.replace('output=csv', 'output=json');
-                const script = document.createElement('script');
-                script.src = jsonUrl;
-                script.onload = () => {
-                    console.log('JSONP loaded successfully');
-                    // ข้อมูลจะอยู่ใน global variable ที่ Google Sheets สร้าง
-                    if (window.google && window.google.visualization) {
-                        resolve([]);
-                    } else {
-                        resolve([]);
-                    }
-                };
-                script.onerror = () => {
-                    console.log('JSONP failed, using mock data');
-                    resolve([]);
-                };
-                document.head.appendChild(script);
-            });
-        }
-        fetchSheet();
+            // เริ่มการทำงานเมื่อหน้าเว็บโหลดเสร็จ
+            window.onload = function() {
+                // กำหนดภาษาเริ่มต้นเป็นภาษาไทย
+                setLanguage('th');
+                // อัปเดตยอดบริจาคเริ่มต้น (สามารถใช้ค่า 0 หรือค่าที่ต้องการ)
+                updateChart(0);
+                // เริ่มอัปเดตเวลาปัจจุบัน
+                setInterval(updateClock, 1000);
+                // ดึงข้อมูลครั้งแรก
+                fetchSheet();
+                // ตั้งค่าให้อัปเดตข้อมูลทุกๆ 10 นาที
+                setInterval(fetchSheet, 1000 * 60 * 10);
+            }
+        })();
     </script>
 </body>
 </html>
