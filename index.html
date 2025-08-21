@@ -88,13 +88,19 @@
                     <div class="bg-emerald-700 p-6 rounded-xl button-hover-effect">
                         <h4 class="text-xl font-bold mb-2" data-i18n="islamic_bank_title">ธนาคารอิสลามแห่งประเทศไทย</h4>
                         <p id="islamicBankAcc" class="text-2xl font-mono tracking-wider mb-3">0901066346</p>
-                        <p class="mb-4" data-i18n="account_name_prefix">ชื่อบัญชี: มัสยิดอัลฮีลาลียะห์</p>
+                        <p class="mb-4">
+                            <span data-i18n="account_name_prefix">ชื่อบัญชี:</span>
+                            <span data-i18n="islamic_bank_account_name" class="font-bold text-amber-300">มัสยิดอัลฮีลาลียะห์</span>
+                        </p>
                         <button onclick="copyToClipboard('islamicBankAcc')" class="bg-white text-emerald-800 font-bold py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" data-i18n="copy_button">คัดลอกเลขบัญชี</button>
                     </div>
                     <div class="bg-emerald-700 p-6 rounded-xl button-hover-effect">
                         <h4 class="text-xl font-bold mb-2" data-i18n="maybank_title">Maybank</h4>
                         <p id="maybankAcc" class="text-2xl font-mono tracking-wider mb-3">557139279538</p>
-                        <p class="mb-4" data-i18n="account_name_prefix">ชื่อบัญชี: Usman Sulung</p>
+                        <p class="mb-4">
+                            <span data-i18n="account_name_prefix">ชื่อบัญชี:</span>
+                            <span data-i18n="maybank_account_name" class="font-bold text-amber-300">Usman Sulong</span>
+                        </p>
                         <button onclick="copyToClipboard('maybankAcc')" class="bg-white text-emerald-800 font-bold py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" data-i18n="copy_button">คัดลอกเลขบัญชี</button>
                     </div>
                     <!-- QR Code donation option without title -->
@@ -141,6 +147,8 @@
                     qr_title: 'ชำระเงินด้วย QR Code',
                     qr_description: 'สแกนเพื่อบริจาคทันที',
                     account_name_prefix: 'ชื่อบัญชี:',
+                    islamic_bank_account_name: 'มัสยิดอัลฮีลาลียะห์',
+                    maybank_account_name: 'Usman Sulong',
                     copy_button: 'คัดลอกเลขบัญชี',
                     copy_success: 'คัดลอกเลขบัญชีเรียบร้อยแล้ว!',
                     footer_message: 'ผลบุญที่ท่านสร้างวันนี้ คือบ้านของท่านในอาคิเราะห์',
@@ -161,6 +169,8 @@
                     qr_title: 'Bayar dengan Kod QR',
                     qr_description: 'Imbas untuk menyumbang sekarang',
                     account_name_prefix: 'Nama Akaun:',
+                    islamic_bank_account_name: 'Masjid Al-Hilaliyah',
+                    maybank_account_name: 'Usman Sulong',
                     copy_button: 'Salin Nombor Akaun',
                     copy_success: 'Nombor akaun berjaya disalin!',
                     footer_message: 'Pahala yang anda bina hari ini, adalah rumah anda di Akhirat.',
