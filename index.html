@@ -43,7 +43,7 @@
         <!-- Language Switcher -->
         <div class="flex justify-end mt-8 mb-4">
             <button onclick="setLanguage('th')" class="bg-emerald-800 text-white font-bold py-1 px-3 rounded-l-full hover:bg-emerald-700 transition-colors">TH</button>
-            <button onclick="setLanguage('ms')" class="bg-emerald-600 text-white font-bold py-1 px-3 rounded-r-full hover:bg-emerald-500 transition-colors">MS</button>
+            <button onclick="setLanguage('ms')" class="bg-emerald-600 text-white font-bold py-1 px-3 rounded-r-full hover:bg-emerald-500 transition-colors">MY</button>
         </div>
 
         <header class="text-center mb-8 md:mb-12">
@@ -97,6 +97,12 @@
                         <p class="mb-4" data-i18n="account_name_prefix">ชื่อบัญชี: Usman Sulung</p>
                         <button onclick="copyToClipboard('maybankAcc')" class="bg-white text-emerald-800 font-bold py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" data-i18n="copy_button">คัดลอกเลขบัญชี</button>
                     </div>
+                    <!-- QR Code donation option without title -->
+                    <div class="bg-emerald-700 p-6 rounded-xl button-hover-effect md:col-span-2">
+                        <div class="flex justify-center">
+                            <img src="https://img2.pic.in.th/pic/qrpay.jpg" alt="QR Code for donation" class="w-48 h-auto rounded-lg shadow-md">
+                        </div>
+                    </div>
                 </div>
                 <div id="copy-feedback" class="text-center mt-4 h-6 text-amber-300 font-bold transition-opacity duration-300 opacity-0"></div>
             </section>
@@ -132,6 +138,8 @@
                     donation_channels: 'ช่องทางการบริจาค',
                     islamic_bank_title: 'ธนาคารอิสลามแห่งประเทศไทย',
                     maybank_title: 'Maybank',
+                    qr_title: 'ชำระเงินด้วย QR Code',
+                    qr_description: 'สแกนเพื่อบริจาคทันที',
                     account_name_prefix: 'ชื่อบัญชี:',
                     copy_button: 'คัดลอกเลขบัญชี',
                     copy_success: 'คัดลอกเลขบัญชีเรียบร้อยแล้ว!',
@@ -150,6 +158,8 @@
                     donation_channels: 'Saluran Sumbangan',
                     islamic_bank_title: 'Bank Islam Thailand',
                     maybank_title: 'Maybank',
+                    qr_title: 'Bayar dengan Kod QR',
+                    qr_description: 'Imbas untuk menyumbang sekarang',
                     account_name_prefix: 'Nama Akaun:',
                     copy_button: 'Salin Nombor Akaun',
                     copy_success: 'Nombor akaun berjaya disalin!',
