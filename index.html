@@ -216,7 +216,7 @@
             donationChart.data.datasets[0].data[1] = Math.max(0, donationGoal - currentAmount);
             donationChart.update();
 
-            percentageText.textContent = `${percentage.toFixed(1)}%`;
+           currentAmountText.textContent = ${currentAmount.toLocaleString()};
             currentAmountText.textContent = currentAmount.toLocaleString('th-TH');
         }
 
@@ -349,3 +349,4 @@
     </script>
 </body>
 </html>
+
